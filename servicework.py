@@ -7,30 +7,30 @@ from googletics import *
 	
 	
 	
-def create_highscore_sheet():
+# def create_highscore_sheet():
 	
-	# First we need to creat the sheet
-	spread_body ={"properties": {"title": 'highscores'}}
+	# # First we need to creat the sheet
+	# spread_body ={"properties": {"title": 'highscores'}}
 	
-	spreadsheet = myService.spreadsheets.create(body=spread_body).execute()
-	print("created the spreadsheet here: " + spreadsheet['spreadsheetUrl'])
+	# spreadsheet = myService.spreadsheets.create(body=spread_body).execute()
+	# print("created the spreadsheet here: " + spreadsheet['spreadsheetUrl'])
 	
 	
-	batch_req = {
-		"updateSheetProperties": {
-			"properties": {
-				"sheetId": 0, 
-				"title": "daily"
-			},
-			"fields": "title",
-			}
-		}
+	# batch_req = {
+		# "updateSheetProperties": {
+			# "properties": {
+				# "sheetId": 0, 
+				# "title": "daily"
+			# },
+			# "fields": "title",
+			# }
+		# }
 	
-	batch_body = {'requests': batch_req}
-	#now we need to update the sheet name
+	# batch_body = {'requests': batch_req}
+	# #now we need to update the sheet name
 	
-	resp = sheet.batchUpdate(spreadsheetId=spreadsheet['spreadsheetId'], body= batch_body).execute()
-	print(resp)
+	# resp = sheet.batchUpdate(spreadsheetId=spreadsheet['spreadsheetId'], body= batch_body).execute()
+	# print(resp)
 	
 def main():
 	''' the main purpose of this is to be a more user friendly "pretty" CMD app
@@ -48,7 +48,7 @@ def main():
 	myServices = Services(creds=creds,spreadsheetService=sheet,driveService=driveservice)
 		
 	
-	myServices.createSpreadsheet("babooloo")
+
 if __name__== '__main__':
 	main()
 	

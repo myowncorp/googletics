@@ -24,12 +24,9 @@ import pprint
 
 class Services():
 	def __init__(self, creds, **kwargs):
-		# https://google-auth.readthedocs.io/en/latest/_modules/google/oauth2/service_account.html
-		self.serviceAcc = creds
-		# https://developers.google.com/resources/api-libraries/documentation/sheets/v4/python/latest/index.html
-		self.spreadsheets = kwargs['spreadsheetService'] 
-		# https://developers.google.com/resources/api-libraries/documentation/drive/v3/python/latest/index.html
-		self.drive = kwargs['driveService']
+		self.serviceAcc = creds # DOCS: https://google-auth.readthedocs.io/en/latest/_modules/google/oauth2/service_account.html
+		self.spreadsheets = kwargs['spreadsheetService'] # DOCS: https://developers.google.com/resources/api-libraries/documentation/sheets/v4/python/latest/index.html
+		self.drive = kwargs['driveService'] # DOCS: https://developers.google.com/resources/api-libraries/documentation/drive/v3/python/latest/index.html
 		self.driveFiles = self.drive.files()
 		self.allSpreadsheets = self.getAllSpreadsheets()
 		self.allMySpreadsheets = self.getAllSpreadsheetsOwned()
@@ -68,22 +65,25 @@ class Services():
 			return (s['spreadsheetUrl'])
 		else:
 			raise ValueError("You already have a sheet with that name")
-	def getSpreadsheet(self, spId):
+			
+	# def getSpreadsheet(self, spId):
 	
-		'''
-			Args:
-				spId: a spread shit id 
-			Returns:
-				spreadsheet object
-			Function:
-				uses sheetsAPI to get the spreadsheet object  DOCS: https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets
-			ex:
-				spId like "1mhHlSyFVnTCemdeikZQc1u4FxUTx8VdVAH0Bt-XdhN0" it will respond with the spreadsheet object  '''
+		# '''
+			# Args:
+				# spId: a spread sheet id 
+			# Returns:
+				# spreadsheet object
+			# Function:
+				# uses sheetsAPI to get the spreadsheet object  DOCS: https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets
+					# Note: objects like this are the reason i began to create this library.
+					# DEPRECATED
+			# ex:
+				# spId like "1mhHlSyFVnTCemdeikZQc1u4FxUTx8VdVAH0Bt-XdhN0" it will respond with the spreadsheet object  '''
 				
 				
-		resp = self.get(spreadsheetId=spId).execute()
-		print(resp['sheets'])
-		return resp
+		# resp = self.get(spreadsheetId=spId).execute()
+		# print(resp['sheets'])
+		# return resp
 	
 	def getAllSpreadsheets(self):
 	
@@ -100,9 +100,11 @@ class Services():
 	
 		''' returns a list of all the file(objects) in the drive that are owned by the specified service accounts'''
 		
+		# resp is a dict of dict for file in files ; https://developers.google.com/drive/api/v3/reference/files/list
 		resp = self.driveFiles.list(q=f"mimeType='application/vnd.google-apps.spreadsheet' and '{self.serviceAcc.service_account_email}' in owners").execute()
-		# resp[files] is a dict of dict for file in files
-		return resp['files']
+		listOfFiles = resp['files'] # i only did this see you understand what it is
+		
+		return listOfFiles
 	
 	
 	def delAllSpreadsheetsOwned(self):
