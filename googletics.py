@@ -20,6 +20,8 @@ import pprint
 # sheet = sheetservice.spreadsheets()
 # myServices = Services(creds=creds,spreadsheetService=sheet,driveService=driveservice)
 
+
+
 class Services():
 	def __init__(self, creds, **kwargs):
 		# https://google-auth.readthedocs.io/en/latest/_modules/google/oauth2/service_account.html
@@ -28,9 +30,9 @@ class Services():
 		self.spreadsheets = kwargs['spreadsheetService'] 
 		# https://developers.google.com/resources/api-libraries/documentation/drive/v3/python/latest/index.html
 		self.drive = kwargs['driveService']
-		self.driveFiles = self.files()
+		self.driveFiles = self.drive.files()
 		self.allSpreadsheets = self.getAllSpreadsheets()
-		self.allMySpreadsheets = self.getAllSpreadsheetsOwned
+		self.allMySpreadsheets = self.getAllSpreadsheetsOwned()
 	
 
 	def files(self):
@@ -78,19 +80,16 @@ class Services():
 			Returns:
 				a list of spreadsheets '''
 		
-		resp = self.drive.files().list(q="mimeType='application/vnd.google-apps.spreadsheet'").execute()
+		resp = self.driveFiles.list(q="mimeType='application/vnd.google-apps.spreadsheet'").execute()
 		return resp['files']
 	
 	
-	def getAllSpreadsheetsOwned(email):
+	def getAllSpreadsheetsOwned(self):
 	
 		''' returns a list of all the file(objects) in the drive that are owned by the specified service accounts'''
 		
-		resp = self.files().list(q=f"mimeType='application/vnd.google-apps.spreadsheet' and '{email}' in owners").execute()
-		print("Here is all the spreadsheets you own: ")
-		for files in resp['files']:
-			print(f' Name: {files["name"]} ID: {files["id"]} ')
-			
+		resp = self.driveFiles.list(q=f"mimeType='application/vnd.google-apps.spreadsheet' and '{self.serviceAcc.service_account_email}' in owners").execute()
+		# resp[files] is a dict of dict for file in files
 		return resp['files']
 	
 	
@@ -98,9 +97,9 @@ class Services():
 	
 		''' deletes all the spreadsheets that you are the owner of '''
 		
-		resp = self.getAllSpreadsheetsOwned(self.serviceAcc.service_account_email)
+		resp = self.getAllSpreadsheetsOwned()
 		for files in resp:
-			self.files().delete(fileId=files['id']).execute()
+			self.drive.files().delete(fileId=files['id']).execute()
 			print(f'deleted spreadsheet with name: {files["name"]}')
 	
 	def delSheetVals(self, spId, rang):
@@ -122,32 +121,6 @@ class Services():
 			
 		return sheets
 
-
-def create_highscore_sheet():
-	
-	# First we need to creat the sheet
-	spread_body ={"properties": {"title": 'highscores'}}
-	
-	spreadsheet = sheet.create(body=spread_body).execute()
-	print("created the spreadsheet here: " + spreadsheet['spreadsheetUrl'])
-	
-	
-	batch_req = {
-		"updateSheetProperties": {
-			"properties": {
-				"sheetId": 0, 
-				"title": "daily"
-			},
-			"fields": "title",
-			}
-		}
-	
-	batch_body = {'requests': batch_req}
-	#now we need to update the sheet name
-	
-	resp = sheet.batchUpdate(spreadsheetId=spreadsheet['spreadsheetId'], body= batch_body).execute()
-	print(resp)
-	
 
 if __name__== "__main__":
 	main()
