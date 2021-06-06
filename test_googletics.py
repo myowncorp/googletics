@@ -46,12 +46,13 @@ class TestServices(unittest.TestCase):
 		
 	def test_getAllSpreadsheets(self):
 		spreads = self.myServices.getAllSpreadsheets()
-		self.assertIn("rollbot", spreads[0]['name'])
+		#self.assertIn("rollbot", spreads[0]['name'])
 		
 	def test_createSpreadsheet(self):
 		# check 2 of the same spreadsheet names
 		testSpreadsheet1 = self.myServices.createSpreadsheet("sametitle")
-		testSpreadsheet2 = self.myServices.createSpreadsheet("sametitle")
+		with self.assertRaises(ValueError):
+			self.myServices.createSpreadsheet("sametitle")
 		spreads = self.myServices.getAllSpreadsheetsOwned()
 		
 		

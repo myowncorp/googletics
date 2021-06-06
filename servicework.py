@@ -3,7 +3,10 @@ from googleapiclient.discovery import build
 import pprint
 from googletics import *
 
-
+	
+	
+	
+	
 def create_highscore_sheet():
 	
 	# First we need to creat the sheet
@@ -43,14 +46,9 @@ def main():
 	driveservice = build('drive', 'v3', credentials=creds)
 	sheet = sheetservice.spreadsheets()
 	myServices = Services(creds=creds,spreadsheetService=sheet,driveService=driveservice)
-	
-	pprint.pprint(getAllSpreadsheets)
-	def createTwoIdenticalSheets():
-		''' create two identically named sheets and pprint them( there url )'''
-		testSpreadsheet1 = myServices.createSpreadsheet("sametitle")
-		testSpreadsheet2 = myServices.createSpreadsheet("sametitle")
 		
-		pprint.pprint(testSpreadsheet1)
-		pprint.pprint(testSpreadsheet2)
+	
+	myServices.createSpreadsheet("babooloo")
 if __name__== '__main__':
 	main()
+	

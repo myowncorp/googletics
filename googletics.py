@@ -50,12 +50,24 @@ class Services():
 				Creates a spreadsheet with the given title in the drive 
 			Returns:
 				The url of the spreadsheet'''
-
+		def nameCheck(self, title):
+		
+			''' checks the request title of the spread sheet to see if its in the drives'''
+			
+			namePass = True
+			for spreadsheet in self.getAllSpreadsheets():	
+				if title == spreadsheet['name']:
+					return False
+				else:
+					namePass = True
+			return namePass
+			
 		spread_body = {'properties': {'title': title}}
-	
-		s = self.spreadsheets.create(body=spread_body).execute()
-		return (s['spreadsheetUrl'])
-	
+		if nameCheck(self, title):
+			s = self.spreadsheets.create(body=spread_body).execute()
+			return (s['spreadsheetUrl'])
+		else:
+			raise ValueError("You already have a sheet with that name")
 	def getSpreadsheet(self, spId):
 	
 		'''
@@ -100,7 +112,7 @@ class Services():
 		resp = self.getAllSpreadsheetsOwned()
 		for files in resp:
 			self.drive.files().delete(fileId=files['id']).execute()
-			print(f'deleted spreadsheet with name: {files["name"]}')
+			#print(f'deleted spreadsheet with name: {files["name"]}')
 	
 	def delSheetVals(self, spId, rang):
 		
@@ -121,7 +133,8 @@ class Services():
 			
 		return sheets
 
-
+def main():
+	pass
 if __name__== "__main__":
 	main()
 
